@@ -29,38 +29,40 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
 
-      # // Get the message box element
+      // Get the message box element
       var messageBox = document.querySelector('.form-control.simplemde');
 
-      # // Add event listener for paste event
+      // Add event listener for paste event
       messageBox.addEventListener('paste', function(event) {
 
-        # // Prevent the default paste behavior
+        // Prevent the default paste behavior
         event.preventDefault();
 
-        # // Get the pasted content
+        // Get the pasted content
         var pastedContent = (event.clipboardData || window.clipboardData).getData('text');
 
-        # // Regex pattern for YouTube video URLs
+        // Regex pattern for YouTube video URLs
         var youtubeUrlPattern = /https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/;
 
-        # // Check if the pasted content matches the YouTube URL pattern
+        // Regex pattern for CircuitVerse URLs
+        var circuitUrlPattern = /https?:\/\/circuitverse\.org\/simulator\/embed\/([a-zA-Z0-9-]+)/;
+
+        // Check if the pasted content matches the YouTube URL pattern
         var youtubeMatch = pastedContent.match(youtubeUrlPattern);
 
-        # // Regex pattern for Vimeo video URLs
-        var vimeoUrlPattern = /https?:\/\/(?:www\.)?vimeo\.com\/(\d+)/;
-        var vimeoMatch = pastedContent.match(vimeoUrlPattern);
-        
-        # // If a match is found, construct the specified format
+        // Check if the pasted content matches the CircuitVerse URL pattern
+        var circuitMatch = pastedContent.match(circuitUrlPattern);
+
+        // If a match is found, construct the specified format
         if (youtubeMatch) {
           var videoId = youtubeMatch[1];
           var formattedContent = "vid(youtube, " + videoId + ")";
-        } else if (vimeoMatch) {
-          var videoId = vimeoMatch[1];
-          var formattedContent = "vid(vimeo, " + videoId + ")";
+        } else if (circuitMatch) {
+          var circuitId = circuitMatch[1];
+          var formattedContent = "circuit(" + circuitId + ")";
         }
 
-        # // Insert the formatted content into the message box
+        // Insert the formatted content into the message box
         if (formattedContent) {
           var currentPosition = messageBox.selectionStart;
           var currentContent = messageBox.value;
