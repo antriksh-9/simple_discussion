@@ -25,4 +25,52 @@
   <%# Describe text formatting options here with a link %>
   <%#= link_to "Parsed with Markdown", "https://guides.github.com/features/mastering-markdown/", target: "_blank" %>
 
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+      // Get the message box element
+      var messageBox = document.querySelector('.form-control.simplemde');
+
+      // Add event listener for paste event
+      messageBox.addEventListener('paste', function(event) {
+
+        // Prevent the default paste behavior
+        event.preventDefault();
+
+        // Get the pasted content
+        var pastedContent = (event.clipboardData || window.clipboardData).getData('text');
+
+        // Regex pattern for YouTube video URLs
+        var youtubeUrlPattern = /https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/;
+
+        // Regex pattern for CircuitVerse URLs
+        var circuitUrlPattern = /https?:\/\/circuitverse\.org\/simulator\/embed\/([a-zA-Z0-9-]+)/;
+
+        // Check if the pasted content matches the YouTube URL pattern
+        var youtubeMatch = pastedContent.match(youtubeUrlPattern);
+
+        // Check if the pasted content matches the CircuitVerse URL pattern
+        var circuitMatch = pastedContent.match(circuitUrlPattern);
+
+        // If a match is found, construct the specified format
+        if (youtubeMatch) {
+          var videoId = youtubeMatch[1];
+          var formattedContent = "vid(youtube, " + videoId + ")";
+        } else if (circuitMatch) {
+          var circuitId = circuitMatch[1];
+          var formattedContent = "circuit(" + circuitId + ")";
+        }
+
+        // Insert the formatted content into the message box
+        if (formattedContent) {
+          var currentPosition = messageBox.selectionStart;
+          var currentContent = messageBox.value;
+          var newContent = currentContent.slice(0, currentPosition) + formattedContent + currentContent.slice(currentPosition);
+          messageBox.value = newContent;
+        }
+      });
+    });
+  </script>
+
 <% end %>
