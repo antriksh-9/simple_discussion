@@ -22,6 +22,10 @@
   <%= f.button "#{f.object.new_record? ? t('comment') : t('update_comment')  }", class: "btn forum-primary-btn", style: "bottom: 10px; right: 10px", data: {disable_with: "<i class='fa fa-spinner fa-spin'></i> #{t('saving_comment')}"} %>
 </div>
 
+<script>
+  var simplemde = new SimpleMDE();
+</script>
+
   <%# Describe text formatting options here with a link %>
   <%#= link_to "Parsed with Markdown", "https://guides.github.com/features/mastering-markdown/", target: "_blank" %>
 
