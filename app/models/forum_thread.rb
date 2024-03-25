@@ -55,17 +55,6 @@ class ForumThread < ApplicationRecord
     end
   end
 
-  def self.search(query)
-    if query.present?
-      # Perform a case-insensitive search on the title column
-      where("lower(title) LIKE ?", "%#{query.downcase}%")
-    else
-      # Return all forum threads if no query is provided
-      all
-    end
-  end
-
-
   def subscribed_reason(user)
     return I18n.t(".not_receiving_notifications") if user.nil?
 
