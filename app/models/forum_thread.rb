@@ -4,7 +4,7 @@ class ForumThread < ApplicationRecord
 
   belongs_to :forum_category
   belongs_to :user
-  has_many :forum_posts
+  has_many :forum_posts, dependent: :destroy
   has_many :forum_subscriptions
   has_many :optin_subscribers, -> { where(forum_subscriptions: {subscription_type: :optin}) }, through: :forum_subscriptions, source: :user
   has_many :optout_subscribers, -> { where(forum_subscriptions: {subscription_type: :optout}) }, through: :forum_subscriptions, source: :user
@@ -54,6 +54,17 @@ class ForumThread < ApplicationRecord
       forum_subscriptions.create(user: user, subscription_type: "optin")
     end
   end
+
+  def self.search(query)
+    if query.present?
+      # Perform a case-insensitive search on the title column
+      where("lower(title) LIKE ?", "%#{query.downcase}%")
+    else
+      # Return all forum threads if no query is provided
+      all
+    end
+  end
+
 
   def subscribed_reason(user)
     return I18n.t(".not_receiving_notifications") if user.nil?

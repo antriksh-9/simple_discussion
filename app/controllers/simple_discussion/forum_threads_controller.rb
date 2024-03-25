@@ -1,7 +1,8 @@
 class SimpleDiscussion::ForumThreadsController < SimpleDiscussion::ApplicationController
   before_action :authenticate_user!, only: [:mine, :participating, :new, :create]
-  before_action :set_forum_thread, only: [:show, :edit, :update]
+  before_action :set_forum_thread, only: [:show, :edit, :update, :destroy]
   before_action :require_mod_or_author_for_thread!, only: [:edit, :update]
+  before_action :require_moderator, only: [:destroy]
 
   def index
     @forum_threads = ForumThread.pinned_first.sorted.includes(:user, :forum_category).paginate(page: page_number)
@@ -49,6 +50,16 @@ class SimpleDiscussion::ForumThreadsController < SimpleDiscussion::ApplicationCo
     end
   end
 
+  def destroy
+    @forum_thread.destroy
+    redirect_to simple_discussion.forum_threads_path, notice: 'Forum thread was successfully removed.'
+  end
+
+  def search
+    @forum_threads = ForumThread.search(params[:q])
+    render action: :index
+  end
+
   def edit
   end
 
@@ -69,4 +80,10 @@ class SimpleDiscussion::ForumThreadsController < SimpleDiscussion::ApplicationCo
   def forum_thread_params
     params.require(:forum_thread).permit(:title, :forum_category_id, forum_posts_attributes: [:body])
   end
+
+  def require_moderator
+    unless current_user.moderator?
+      redirect_to simple_discussion.forum_thread_path(@forum_thread), alert: 'Only moderators can perform this action.'
+    end
+  end  
 end
