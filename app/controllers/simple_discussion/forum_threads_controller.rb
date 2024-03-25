@@ -55,11 +55,6 @@ class SimpleDiscussion::ForumThreadsController < SimpleDiscussion::ApplicationCo
     redirect_to simple_discussion.forum_threads_path, notice: 'Forum thread was successfully removed.'
   end
 
-  def search
-    @forum_threads = ForumThread.search(params[:q])
-    render action: :index
-  end
-
   def edit
   end
 
