@@ -41,6 +41,8 @@ class SimpleDiscussion::ForumThreadsController < SimpleDiscussion::ApplicationCo
     @forum_thread = current_user.forum_threads.new(forum_thread_params)
     @forum_thread.forum_posts.each { |post| post.user_id = current_user.id }
 
+    apply_language_filter(@forum_thread)
+
     if @forum_thread.save
       SimpleDiscussion::ForumThreadNotificationJob.perform_later(@forum_thread)
       redirect_to simple_discussion.forum_thread_path(@forum_thread)
@@ -54,6 +56,7 @@ class SimpleDiscussion::ForumThreadsController < SimpleDiscussion::ApplicationCo
 
   def update
     if @forum_thread.update(forum_thread_params)
+      apply_language_filter(@forum_thread)
       redirect_to simple_discussion.forum_thread_path(@forum_thread), notice: I18n.t("your_changes_were_saved")
     else
       render action: :edit
@@ -68,5 +71,15 @@ class SimpleDiscussion::ForumThreadsController < SimpleDiscussion::ApplicationCo
 
   def forum_thread_params
     params.require(:forum_thread).permit(:title, :forum_category_id, forum_posts_attributes: [:body])
+  end
+
+  def apply_language_filter(forum_thread)
+    filter = LanguageFilter::Filter.new(
+      matchlist: :profanity,
+      exceptionlist: [],
+      replacement: :stars
+    )
+    forum_thread.title = filter.sanitize(forum_thread.title)
+    forum_thread.forum_posts.each { |post| post.body = filter.sanitize(post.body) }
   end
 end

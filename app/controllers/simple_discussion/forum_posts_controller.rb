@@ -9,6 +9,12 @@ class SimpleDiscussion::ForumPostsController < SimpleDiscussion::ApplicationCont
     @forum_post = @forum_thread.forum_posts.new(forum_post_params)
     @forum_post.user_id = current_user.id
 
+    # Initialize the filter with the appropriate matchlist and replacement
+    filter = LanguageFilter::Filter.new(matchlist: :profanity, replacement: :stars)
+
+    # Filter the body content
+    @forum_post.body = filter.sanitize(@forum_post.body)
+
     if @forum_post.save
       SimpleDiscussion::ForumPostNotificationJob.perform_later(@forum_post)
       redirect_to simple_discussion.forum_thread_path(@forum_thread, anchor: "forum_post_#{@forum_post.id}")
@@ -21,6 +27,11 @@ class SimpleDiscussion::ForumPostsController < SimpleDiscussion::ApplicationCont
   end
 
   def update
+    # Initialize the filter with the appropriate matchlist and replacement
+    filter = LanguageFilter::Filter.new(matchlist: :profanity, replacement: :stars)
+
+    # Filter the body content
+    forum_post_params[:body] = filter.sanitize(forum_post_params[:body])
     if @forum_post.update(forum_post_params)
       redirect_to simple_discussion.forum_thread_path(@forum_thread)
     else
