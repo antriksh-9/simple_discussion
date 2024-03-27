@@ -22,6 +22,29 @@
   <%= f.button "#{f.object.new_record? ? t('comment') : t('update_comment')  }", class: "btn forum-primary-btn", style: "bottom: 10px; right: 10px", data: {disable_with: "<i class='fa fa-spinner fa-spin'></i> #{t('saving_comment')}"} %>
 </div>
 
+<script>
+  var simplemde = new SimpleMDE({
+    element: document.querySelector('.simplemde'),
+    toolbar: [
+      "bold", "italic", "heading", "|",
+      {
+        name: "mention",
+        action: insertAtSymbol, 
+        className: "fa fa-at",
+        title: "Mention User",
+      },
+      "|", "quote", "unordered-list", "ordered-list", "|",
+      "link", "image", "|", "preview", "side-by-side", "fullscreen"
+    ]
+  });
+
+  function insertAtSymbol(editor) {
+    var cm = editor.codemirror;
+    var output = '@'; 
+    cm.replaceSelection(output);
+  }
+</script>
+
   <%# Describe text formatting options here with a link %>
   <%#= link_to "Parsed with Markdown", "https://guides.github.com/features/mastering-markdown/", target: "_blank" %>
 
