@@ -23,7 +23,26 @@
 </div>
 
 <script>
-  var simplemde = new SimpleMDE();
+  var simplemde = new SimpleMDE({
+    element: document.querySelector('.simplemde'),
+    toolbar: [
+      "bold", "italic", "heading", "|",
+      {
+        name: "mention",
+        action: insertAtSymbol, 
+        className: "fa fa-at",
+        title: "Mention User",
+      },
+      "|", "quote", "unordered-list", "ordered-list", "|",
+      "link", "image", "|", "preview", "side-by-side", "fullscreen"
+    ]
+  });
+
+  function insertAtSymbol(editor) {
+    var cm = editor.codemirror;
+    var output = '@'; 
+    cm.replaceSelection(output);
+  }
 </script>
 
   <%# Describe text formatting options here with a link %>
