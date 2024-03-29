@@ -37,6 +37,11 @@
         <div class="category-chip" style="color: <%= forum_thread.forum_category.color %>; border-color: <%= forum_thread.forum_category.color %>">
           <%= forum_thread.forum_category.name %>
         </div>
+        <div class="spam">
+          <% if forum_thread.spam? %>
+            <span class="badge badge-warning">Marked as Spam</span>
+          <% end %>
+        </div>
       </div>
     </div>
   </div>

@@ -1,6 +1,6 @@
 class SimpleDiscussion::ForumThreadsController < SimpleDiscussion::ApplicationController
-  before_action :authenticate_user!, only: [:mine, :participating, :new, :create]
-  before_action :set_forum_thread, only: [:show, :edit, :update]
+  before_action :authenticate_user!, only: [:mine, :participating, :new, :create, :mark_as_spam, :unmark_as_spam]
+  before_action :set_forum_thread, only: [:show, :edit, :update, :mark_as_spam, :unmark_as_spam]
   before_action :require_mod_or_author_for_thread!, only: [:edit, :update]
 
   def index
@@ -25,6 +25,22 @@ class SimpleDiscussion::ForumThreadsController < SimpleDiscussion::ApplicationCo
   def participating
     @forum_threads = ForumThread.includes(:user, :forum_category).joins(:forum_posts).where(forum_posts: {user_id: current_user.id}).distinct(forum_posts: :id).sorted.paginate(page: page_number)
     render action: :index
+  end
+
+  def spam
+    @spam_threads = ForumThread.where(spam: true).sorted.includes(:user, :forum_category).paginate(page: page_number)
+  end  
+
+  def mark_as_spam
+    @forum_thread.update(spam: true)
+    flash[:notice] = 'Thread was successfully marked as spam.'
+    redirect_to simple_discussion.forum_thread_path(@forum_thread)
+  end
+
+  def unmark_as_spam
+    @forum_thread.update(spam: false)
+    flash[:notice] = 'Thread was successfully unmarked as spam.'
+    redirect_to simple_discussion.forum_thread_path(@forum_thread)
   end
 
   def show
