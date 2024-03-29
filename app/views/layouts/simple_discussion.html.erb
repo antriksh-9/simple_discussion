@@ -43,12 +43,12 @@
           <% end %>
 
           <% if is_moderator? %>
-          <%= forum_link_to simple_discussion.spam_forum_threads_path do %>
-            <div class="btn-link">
-              <%= icon "fas", "exclamation-circle" %>
-              <%= t('.spam') %>
-            </div>
-          <% end %>
+            <%= forum_link_to simple_discussion.spam_forum_threads_path do %>
+              <div class="btn-link">
+                <%= icon "fas", "exclamation-circle" %>
+                <%= t('.spam') %>
+              </div>
+            <% end %>
           <% end %>
         </div>
         <% if @forum_thread.present? && @forum_thread.persisted? %>
