@@ -5,8 +5,14 @@ SimpleDiscussion::Engine.routes.draw do
         get :answered
         get :unanswered
         get :mine
+        get :spam
         get :participating
         get "category/:id", to: "forum_categories#index", as: :forum_category
+      end
+
+      member do
+        put :mark_as_spam
+        put :unmark_as_spam
       end
 
       resources :forum_posts, path: :posts do
