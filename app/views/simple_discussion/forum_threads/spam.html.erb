@@ -1,0 +1,8 @@
+<h2>Spam Threads</h2>
+<% if @spam_threads.present? %>
+  <% @spam_threads.each do |spam_thread| %>
+    <%= render partial: "forum_thread", locals: { forum_thread: spam_thread } %>
+  <% end %>
+<% else %>
+  <p>No spammed threads found.</p>
+<% end %>
