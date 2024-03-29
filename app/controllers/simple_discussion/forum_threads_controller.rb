@@ -27,6 +27,10 @@ class SimpleDiscussion::ForumThreadsController < SimpleDiscussion::ApplicationCo
     render action: :index
   end
 
+  def spam
+    @spam_threads = ForumThread.where(spam: true).sorted.includes(:user, :forum_category).paginate(page: page_number)
+  end  
+
   def mark_as_spam
     @forum_thread.update(spam: true)
     flash[:notice] = 'Thread was successfully marked as spam.'
