@@ -52,6 +52,10 @@ class SimpleDiscussion::ForumThreadsController < SimpleDiscussion::ApplicationCo
   def edit
   end
 
+  def leaderboard
+    @users = User.joins(:forum_posts).group('users.id').order('count(forum_posts.id) desc')
+  end
+
   def update
     if @forum_thread.update(forum_thread_params)
       redirect_to simple_discussion.forum_thread_path(@forum_thread), notice: I18n.t("your_changes_were_saved")

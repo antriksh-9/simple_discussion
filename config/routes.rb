@@ -5,6 +5,7 @@ SimpleDiscussion::Engine.routes.draw do
         get :answered
         get :unanswered
         get :mine
+        get :leaderboard
         get :participating
         get "category/:id", to: "forum_categories#index", as: :forum_category
       end
@@ -19,6 +20,9 @@ SimpleDiscussion::Engine.routes.draw do
       resource :notifications
     end
   end
+
+  resources :users, only: [:show], path: :activity
+end
 
   root to: "simple_discussion/forum_threads#index"
 end
