@@ -1,0 +1,8 @@
+<div class="user-details d-flex flex-row">
+    <div class="user-avatar mr-2" ><img src="<%= gravatar_url_for(@user.email, size: 80) %>" alt="avatar of user" ></div>
+    <div class="details d-flex flex-column justify-content-between">
+        <h3 class="title ml-2 text-black"><%= link_to @user.name, user_path(@user) %>
+        </h3>
+</div>
+</div>
+
